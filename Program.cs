@@ -14,16 +14,16 @@ public enum EstadoSolicitud
 public class Solicitud
 {
     public int Id { get; set; }
-    public string NombreCliente { get; set; }
-    public string Descripcion { get; set; }
+    public string NombreCliente { get; set; } = "";
+    public string Descripcion { get; set; } = "";
     public EstadoSolicitud Estado { get; set; }
 
     public void Mostrar()
     {
-        Console.WriteLine("ID: " + Id);
-        Console.WriteLine("Cliente: " + NombreCliente);
-        Console.WriteLine("Descripción: " + Descripcion);
-        Console.WriteLine("Estado: " + Estado);
+        Console.WriteLine($"ID: {Id}");
+        Console.WriteLine($"Cliente: {NombreCliente}");
+        Console.WriteLine($"Descripción: {Descripcion}");
+        Console.WriteLine($"Estado: {Estado}");
         Console.WriteLine("------------------------");
     }
 }
@@ -35,8 +35,9 @@ class Program
 
     static void Main(string[] args)
     {
-        int opcion = 0;
+        Console.Clear(); // limpia pantalla al iniciar
 
+        int opcion;
         do
         {
             Console.WriteLine("\n--- MENÚ ---");
@@ -47,7 +48,13 @@ class Program
             Console.WriteLine("5. Salir");
             Console.Write("Opción: ");
 
-            int.TryParse(Console.ReadLine(), out opcion);
+            if (!int.TryParse(Console.ReadLine(), out opcion))
+            {
+                Console.WriteLine("Entrada inválida.");
+                continue;
+            }
+
+            Console.Clear(); // limpia cada vez (para que la captura se vea bonita)
 
             switch (opcion)
             {
@@ -90,14 +97,14 @@ class Program
 
         solicitudes.Add(s);
 
-        Console.WriteLine("Solicitud registrada.");
+        Console.WriteLine("\nSolicitud registrada correctamente.");
     }
 
     static void MostrarSolicitudes()
     {
         if (solicitudes.Count == 0)
         {
-            Console.WriteLine("No hay solicitudes.");
+            Console.WriteLine("No hay solicitudes registradas.");
             return;
         }
 
@@ -110,8 +117,7 @@ class Program
     static void CambiarEstado()
     {
         Console.Write("Ingrese ID: ");
-        int id;
-        if (!int.TryParse(Console.ReadLine(), out id))
+        if (!int.TryParse(Console.ReadLine(), out int id))
         {
             Console.WriteLine("ID inválido.");
             return;
@@ -119,38 +125,34 @@ class Program
 
         var solicitud = solicitudes.Find(s => s.Id == id);
 
-        if (solicitud != null)
+        if (solicitud == null)
         {
-            Console.WriteLine("Nuevo estado:");
-            Console.WriteLine("0. Pendiente");
-            Console.WriteLine("1. EnProceso");
-            Console.WriteLine("2. Completada");
-            Console.WriteLine("3. Cancelada");
+            Console.WriteLine("Solicitud no encontrada.");
+            return;
+        }
 
-            int opcion;
-            if (int.TryParse(Console.ReadLine(), out opcion) &&
-                Enum.IsDefined(typeof(EstadoSolicitud), opcion))
-            {
-                solicitud.Estado = (EstadoSolicitud)opcion;
-                Console.WriteLine("Estado actualizado.");
-            }
-            else
-            {
-                Console.WriteLine("Opción inválida.");
-            }
+        Console.WriteLine("\nSeleccione nuevo estado:");
+        Console.WriteLine("0. Pendiente");
+        Console.WriteLine("1. EnProceso");
+        Console.WriteLine("2. Completada");
+        Console.WriteLine("3. Cancelada");
+
+        if (int.TryParse(Console.ReadLine(), out int opcion) &&
+            Enum.IsDefined(typeof(EstadoSolicitud), opcion))
+        {
+            solicitud.Estado = (EstadoSolicitud)opcion;
+            Console.WriteLine("Estado actualizado correctamente.");
         }
         else
         {
-            Console.WriteLine("Solicitud no encontrada.");
+            Console.WriteLine("Opción inválida.");
         }
     }
 
     static void BuscarPorId()
     {
         Console.Write("Ingrese ID: ");
-        int id;
-
-        if (!int.TryParse(Console.ReadLine(), out id))
+        if (!int.TryParse(Console.ReadLine(), out int id))
         {
             Console.WriteLine("ID inválido.");
             return;
