@@ -35,7 +35,7 @@ class Program
 
     static void Main(string[] args)
     {
-        int opcion;
+        int opcion = 0;
 
         do
         {
@@ -47,7 +47,7 @@ class Program
             Console.WriteLine("5. Salir");
             Console.Write("Opción: ");
 
-            opcion = int.Parse(Console.ReadLine());
+            int.TryParse(Console.ReadLine(), out opcion);
 
             switch (opcion)
             {
@@ -63,6 +63,12 @@ class Program
                 case 4:
                     BuscarPorId();
                     break;
+                case 5:
+                    Console.WriteLine("Saliendo...");
+                    break;
+                default:
+                    Console.WriteLine("Opción inválida.");
+                    break;
             }
 
         } while (opcion != 5);
@@ -73,11 +79,12 @@ class Program
         Solicitud s = new Solicitud();
 
         s.Id = contadorId++;
+
         Console.Write("Nombre del cliente: ");
-        s.NombreCliente = Console.ReadLine();
+        s.NombreCliente = Console.ReadLine() ?? "";
 
         Console.Write("Descripción: ");
-        s.Descripcion = Console.ReadLine();
+        s.Descripcion = Console.ReadLine() ?? "";
 
         s.Estado = EstadoSolicitud.Pendiente;
 
@@ -88,6 +95,12 @@ class Program
 
     static void MostrarSolicitudes()
     {
+        if (solicitudes.Count == 0)
+        {
+            Console.WriteLine("No hay solicitudes.");
+            return;
+        }
+
         foreach (var s in solicitudes)
         {
             s.Mostrar();
@@ -97,7 +110,12 @@ class Program
     static void CambiarEstado()
     {
         Console.Write("Ingrese ID: ");
-        int id = int.Parse(Console.ReadLine());
+        int id;
+        if (!int.TryParse(Console.ReadLine(), out id))
+        {
+            Console.WriteLine("ID inválido.");
+            return;
+        }
 
         var solicitud = solicitudes.Find(s => s.Id == id);
 
@@ -109,9 +127,9 @@ class Program
             Console.WriteLine("2. Completada");
             Console.WriteLine("3. Cancelada");
 
-            int opcion = int.Parse(Console.ReadLine());
-
-            if (Enum.IsDefined(typeof(EstadoSolicitud), opcion))
+            int opcion;
+            if (int.TryParse(Console.ReadLine(), out opcion) &&
+                Enum.IsDefined(typeof(EstadoSolicitud), opcion))
             {
                 solicitud.Estado = (EstadoSolicitud)opcion;
                 Console.WriteLine("Estado actualizado.");
@@ -130,7 +148,13 @@ class Program
     static void BuscarPorId()
     {
         Console.Write("Ingrese ID: ");
-        int id = int.Parse(Console.ReadLine());
+        int id;
+
+        if (!int.TryParse(Console.ReadLine(), out id))
+        {
+            Console.WriteLine("ID inválido.");
+            return;
+        }
 
         var solicitud = solicitudes.Find(s => s.Id == id);
 
