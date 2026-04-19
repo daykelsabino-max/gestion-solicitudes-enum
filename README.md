@@ -25,10 +25,8 @@ Las solicitudes empiezan en Pendiente y el estado se cambia con opciones del men
 
 ## Ejecución
 
-Se corre en consola desde Visual Studio.
+Se corre en consola.
 
-## Capturas
 
-(Aquí pongo las imágenes)
 
 
